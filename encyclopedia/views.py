@@ -27,7 +27,22 @@ def display_entry(request, name):
         article_list = util.list_entries()
         return render(request, "encyclopedia/entry.html", {
             "title": "Nonexistent",
-            "content": "<h1>This article does not exit. Please double check your spelling.</h1>"
+            "content": "<h1>This article does not exist. Please double check your spelling.</h1>"
                        "<h2>Check out the articles we have:</h2>",
             "article_list": article_list
+        })
+
+
+def search(request):
+    results = util.get_entries(request.POST['q'])
+
+    if len(results) != 0:
+        return render(request, "encyclopedia/search.html",{
+            "search_result": True,
+            "entries": results
+        })
+    else:
+        return render(request, "encyclopedia/search.html",{
+            "search_result": False,
+            "entries": util.list_entries()
         })
