@@ -1,0 +1,20 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block body %}
+
+    {{ content|safe }}
+    {% if article_list is not None %}
+        <ul>
+        {% for entry in article_list %}
+            <li>
+                <a href="{% url 'encyclopedia:displayEntry' name=entry %}">{{ entry }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+{% endblock %}
