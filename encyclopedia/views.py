@@ -1,4 +1,5 @@
 import string
+import random
 
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -115,3 +116,12 @@ def edit_entry(request, name):
         util.save_entry(name, request.POST["text"])
 
         return HttpResponseRedirect(reverse("encyclopedia:displayEntry", kwargs={"name": name}))
+
+
+def random_entry(request):
+    entry = random.choice(util.list_entries())
+    return render(request, "encyclopedia/entry.html",{
+        "title": entry,
+        "content": markdown2.markdown(util.get_entry(entry)),
+        "form": NewSearchForm()
+    })
