@@ -7,6 +7,7 @@
 {% block body %}
 
     {{ content|safe }}
+    <a href="{% url 'encyclopedia:edit' name=title %}">Edit Entry</a>
     {% if article_list is not None %}
         <ul>
         {% for entry in article_list %}

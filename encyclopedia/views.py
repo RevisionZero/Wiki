@@ -102,4 +102,16 @@ def create_entry(request):
             "form": NewSearchForm(),
             "createCollision": False
         })
-    
+
+
+def edit_entry(request, name):
+    if request.method == "GET":
+        entry_text = util.get_entry(name)
+        return render(request, "encyclopedia/edit.html",{
+            "text": entry_text,
+            "name": name
+        })
+    else:
+        util.save_entry(name, request.POST["text"])
+
+        return HttpResponseRedirect(reverse("encyclopedia:displayEntry", kwargs={"name": name}))
