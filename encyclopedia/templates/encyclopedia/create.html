@@ -1,0 +1,17 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Create Entry
+{% endblock %}
+
+{% block body %}
+    <h1>Create a New Entry</h1>
+    {% if createCollision %}
+        <h2>An article with the same title already exists.</h2>
+    {% endif %}
+    <form action="{% url 'encyclopedia:create' %}" method="post">
+        {% csrf_token %}
+        {{ createForm }}
+        <input type="submit">
+    </form>
+{% endblock %}

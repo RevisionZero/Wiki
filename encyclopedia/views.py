@@ -1,8 +1,9 @@
 import string
 
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
+from django.urls import reverse
 
 from . import util
 
@@ -11,6 +12,11 @@ import markdown2
 
 class NewSearchForm(forms.Form):
     search_parameter = forms.CharField(label="New Search")
+
+
+class NewEntryForm(forms.Form):
+    title = forms.CharField(label="Title")
+    entry_text = forms.CharField(widget=forms.Textarea(attrs={"rows": "5", "cols": "5"}))
 
 
 def index(request):
@@ -65,3 +71,35 @@ def search(request):
             "form": form
         })
 
+
+def create_entry(request):
+    if request.method == "POST":
+        form = NewEntryForm(request.POST)
+
+        if form.is_valid():
+            if not util.list_entries().__contains__(form.cleaned_data["title"]):
+                title = form.cleaned_data["title"]
+                entry_text = form.cleaned_data["entry_text"]
+
+                util.save_entry(title, entry_text)
+
+                return HttpResponseRedirect(reverse("encyclopedia:displayEntry", kwargs={"name": title}))
+            else:
+                return render(request, "encyclopedia/create.html", {
+                    "createForm": form,
+                    "form": NewSearchForm(),
+                    "createCollision": True
+                })
+        else:
+            return render(request, "encyclopedia/create.html", {
+                "createForm": form,
+                "form": NewSearchForm(),
+                "createCollision": False
+            })
+    else:
+        return render(request, "encyclopedia/create.html", {
+            "createForm": NewEntryForm(),
+            "form": NewSearchForm(),
+            "createCollision": False
+        })
+    
